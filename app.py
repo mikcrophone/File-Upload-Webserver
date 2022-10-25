@@ -1,14 +1,17 @@
-from flask import Flask, render_template, request, redirect, url_for
-
+from flask import Flask, render_template, request
+from werkzeug import secure_filename
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-@app.route('/', methods=['POST'])
+@app.route('/upload')
 def upload_file():
-    uploaded_file = request.files['file']
-    if uploaded_file.filename != '':
-        uploaded_file.save(uploaded_file.filename)
-    return redirect(url_for('index'))
+   return render_template('upload.html')
+	
+@app.route('/uploader', methods = ['GET', 'POST'])
+def upload_file():
+   if request.method == 'POST':
+      f = request.files['file']
+      f.save(secure_filename(f.filename))
+      return 'file uploaded successfully'
+		
+if __name__ == '__main__':
+   app.run(debug = True)
